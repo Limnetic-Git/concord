@@ -69,6 +69,7 @@ class ClientSocket:
         self.tasks_queue.append({
             "type": 'create_private_chat',
             "chat_name": chat_name,
+            "chat_type": 'PRIVATE',
             "members_logins": members_logins,
             })
     

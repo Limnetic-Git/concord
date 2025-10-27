@@ -5,7 +5,7 @@ class Chat:
     id: str
     type: str
     name: str
-    members: list #List[dict]
+    members: list #List[dict] 
     messages: list #List[dict]
     
 class ChatsManager:
@@ -16,7 +16,7 @@ class ChatsManager:
     def create_chat(self, accounts_manager, chat_type: str, chat_name: str, members_logins: list):
         """Создаёт чат с указанными параметрами"""
         current_chat_id = f'{self.id:09d}'
-        self.chats[current_chat_id] = Chats(current_chat_id, chat_type, chat_name, [], [])
+        self.chats[current_chat_id] = Chat(current_chat_id, chat_type, chat_name, [], [])
         self.id += 1
         
         members = []
@@ -32,9 +32,8 @@ class ChatsManager:
         
     def add_member_to_chat(self, chat_id: str, member):
         """Добавляет клиента в указанный чат"""
-        if not member.id in self.chats[chat_id].members_ids:
-            self.chats[chat_id].members_ids.append(member.id)
-            self.chats[chat_id].members_logins.append(member.login)
+        if not any(member_obj.id == member.id for member_obj in self.chats[chat_id].members):
+            self.chats[chat_id].members.append(member)
             member.chats_ids.append(chat_id)
             return 2100 # Успех
         else:
