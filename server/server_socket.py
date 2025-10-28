@@ -21,17 +21,23 @@ class ServerSocket:
             pack = {}
             if 'request' in incoming_pack:
                 if incoming_pack['request']['type'] == 'login':
+                    status, account_id = self.accounts_manager.authentication_handler(incoming_pack['request']['login'],
+                                                                                                                           incoming_pack['request']['password'])
                     pack['request_answer'] = {
                                         'type': 'login',
-                                        'status': self.accounts_manager.authentication_handler(incoming_pack['request']['login'],
-                                                                                                                           incoming_pack['request']['password']),
+                                        'status': status,
+                                        'id': account_id,
                                         }
+                    
                 elif incoming_pack['request']['type'] == 'registration':
+                    status, account_id = self.accounts_manager.create_new_account(incoming_pack['request']['login'],
+                                                                                                                        incoming_pack['request']['password'])
                     pack['request_answer'] = {
                                         'type': 'registration',
-                                        'status': self.accounts_manager.create_new_account(incoming_pack['request']['login'],
-                                                                                                                        incoming_pack['request']['password']),
+                                        'status': status,
+                                        'id': account_id,
                                         }
+                    
                 elif incoming_pack['request']['type'] == 'create_private_chat':
                     pack['request_answer'] = {
                                         'type': 'create_private_chat',
@@ -41,6 +47,14 @@ class ServerSocket:
                                                     incoming_pack['request']['chat_name'],
                                                     incoming_pack['request']['members_logins'])
                                         }
+                elif incoming_pack['request']['type'] == 'chats_history':
+                    pack['request_answer'] = {
+                                        'type': 'chats_history',
+                                        'chats_history': self.chats_manager.chats_history_for_account(
+                                                            self.accounts_manager,
+                                                            incoming_pack['request']['id']),
+                                        }
+                    
             self.server.send(connection, str(pack))
 
 

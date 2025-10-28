@@ -7,10 +7,11 @@ client_socket = ClientSocket('127.0.0.1', 1234)
 
 logged_in = False
 
+my_id = None
 my_login = None
 
 def test_console_interface():
-    global my_login, logged_in
+    global my_id, my_login, logged_in
     action = input('1) Войти; 2) Зарегистрироваться: ')
     if action == '1':
         login = input('Логин: ')
@@ -21,6 +22,7 @@ def test_console_interface():
         if request_answer['status'] == 1101:
             logged_in = True
             my_login = login
+            my_id = request_answer['id']
         else:
             print('ОШИБКА!')
             test_console_interface()
@@ -34,12 +36,19 @@ def test_console_interface():
         if request_answer['status'] == 1100:
             logged_in = True
             my_login = login
+            my_id = request_answer['id']
+            
         else:
             print('ОШИБКА!')
             test_console_interface()
 
 test_console_interface()
 if logged_in:
+    client_socket.chats_history_request(my_id)
+    request_answer = client_socket.wait_for_request_answer('chats_history')
+    print(request_answer)
+    
+    
     action = input('1) Создать ЛС: ')
     if action == '1':
         friend_login = input('Введите логин друга: ')

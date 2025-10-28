@@ -73,3 +73,11 @@ class ClientSocket:
             "members_logins": members_logins,
             })
     
+    def chats_history_request(self, account_id: str):
+        """Создаёт запрос на историю текстовых чатов в которых состоит аккаунт"""
+        self.tasks_queue.append({
+            "type": 'chats_history',
+            "id": account_id,
+            })
+        
+    

@@ -16,11 +16,12 @@ class AccountsManager:
     def create_new_account(self, login: str, password_hash: str):
         """Создаёт аккаунт"""
         if self.__check_login_uniqueness(login): # Если аккаунта с таким логином нет
-            self.accounts[f'{self.id:09d}'] = Account(f'{self.id:09d}', login, password_hash, [])
+            new_id = f'{self.id:09d}'
+            self.accounts[new_id] = Account(new_id, login, password_hash, [])
             self.id += 1
-            return 1100 # Аккаунт создан
+            return 1100, new_id# Аккаунт создан
         else: # Если аккаунт с таким логином уже существует
-            return 1000 # Неудача
+            return 1000, None # Неудача
         
     def __check_login_uniqueness(self, login: str):
         """Проверка на уникальность логина""" #True если уникален, False если нет
@@ -37,11 +38,11 @@ class AccountsManager:
             account = self.accounts[key]
             if account.login == login:
                 if account.password_hash == password_hash:
-                    return 1101 # Успех
+                    return 1101, key # Успех
                 else: # Неверный пароль
-                    return 1001 # Неудача
+                    return 1001, None # Неудача
         else: # Не нашёл аккаунта с таким логином
-            return 1002 # Неудача
+            return 1002, None # Неудача
     
     def find_account_by_login(self, login: str):
         """Ищет аккаунт с указанным логином и возвращает его id"""

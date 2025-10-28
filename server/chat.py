@@ -43,6 +43,13 @@ class ChatsManager:
         else:
             return 2000 # Пользователь уже в чате
     
+    def chats_history_for_account(self, accounts_manager, account_id: str):
+        """Возвращает чаты (целиком) в которых есть указанный аккаунт"""
+        chats_ids = accounts_manager.accounts[account_id].chats_ids
+        chats_history = []
+        for chat_id in chats_ids:
+            chats_history.append(self.chats[chat_id].__dict__)
+        return chats_history
 
         
 
