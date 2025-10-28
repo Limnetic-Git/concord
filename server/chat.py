@@ -10,6 +10,7 @@ class Chat:
     
 class ChatsManager:
     def __init__(self):
+        """Инициализация менеджера чатов"""
         self.chats = {}
         self.id = 0
     
@@ -32,10 +33,13 @@ class ChatsManager:
         
     def add_member_to_chat(self, chat_id: str, member):
         """Добавляет клиента в указанный чат"""
-        if not any(member_obj.id == member.id for member_obj in self.chats[chat_id].members):
-            self.chats[chat_id].members.append(member)
+        if not any(member_obj['id'] == member.id for member_obj in self.chats[chat_id].members):
+            self.chats[chat_id].members.append({'id': member.id, 'login': member.login})
+            
             member.chats_ids.append(chat_id)
+            print(self.chats[chat_id])
             return 2100 # Успех
+        
         else:
             return 2000 # Пользователь уже в чате
     

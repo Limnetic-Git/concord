@@ -17,7 +17,7 @@ class ServerSocket:
         """Поток запускаемый для каждого клиента в сети"""
         while True:
             incoming_pack = self.server.receive(connection, 20480, raw=False)
-            
+      
             pack = {}
             if 'request' in incoming_pack:
                 if incoming_pack['request']['type'] == 'login':
