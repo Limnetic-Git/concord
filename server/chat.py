@@ -51,6 +51,12 @@ class ChatsManager:
             chats_history.append(self.chats[chat_id].__dict__)
         return chats_history
 
+    def add_message_to_chat(self, chat_id: str, message_text: str, author_login: str):
+        self.chats[chat_id].messages.append({
+            "message_text": message_text,
+            "author_login": author_login,
+        })
+
         
 
 

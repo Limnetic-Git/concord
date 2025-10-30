@@ -80,4 +80,14 @@ class ClientSocket:
             "id": account_id,
             })
         
+    def message_request(self, chat_id: str, message_text: str, author_login: str):
+        """Создаёт запрос на отправку сообщения в чат"""
+        self.tasks_queue.append({
+            "type": 'message',
+            "chat_id": chat_id,
+            "message_text": message_text,
+            "author_login": author_login,
+            })
+        return 1
+        
     

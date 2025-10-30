@@ -54,6 +54,14 @@ class ServerSocket:
                                                             self.accounts_manager,
                                                             incoming_pack['request']['id']),
                                         }
+                elif incoming_pack['request']['type'] == 'message':
+                    pack['request_answer'] = {
+                        'type': 'message',
+                        'status': self.chats_manager.add_message_to_chat(
+                            incoming_pack['request']['chat_id'],
+                            incoming_pack['request']['message_text'],
+                            incoming_pack['request']['author_login'])
+                                             }
                     
             self.server.send(connection, str(pack))
 

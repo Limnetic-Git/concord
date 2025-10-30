@@ -3,7 +3,7 @@ from pprint import pprint
 from dataclasses import dataclass
 
 
-client_socket = ClientSocket('127.0.0.1', 1234)
+client_socket = ClientSocket('127.0.0.2', 1234)
 
 logged_in = False
 
@@ -43,6 +43,7 @@ def test_console_interface():
             test_console_interface()
 
 test_console_interface()
+
 if logged_in:
     client_socket.chats_history_request(my_id)
     request_answer = client_socket.wait_for_request_answer('chats_history')
@@ -54,6 +55,10 @@ if logged_in:
         friend_login = input('Введите логин друга: ')
         client_socket.create_private_chat_request('test', [my_login, friend_login])
         request_answer = client_socket.wait_for_request_answer('create_private_chat')
+        
+        #client_socket.message_request('000000000', 'First message!', my_login)
+        #request_answer = client_socket.wait_for_request_answer('message')
+        
         print(request_answer)
     
 
