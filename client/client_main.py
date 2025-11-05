@@ -56,8 +56,8 @@ if logged_in:
         client_socket.create_private_chat_request('test', [my_login, friend_login])
         request_answer = client_socket.wait_for_request_answer('create_private_chat')
         
-        #client_socket.message_request('000000000', 'First message!', my_login)
-        #request_answer = client_socket.wait_for_request_answer('message')
+        client_socket.message_request('000000000', 'First message!', my_login)
+        request_answer = client_socket.wait_for_request_answer('message')
         
         print(request_answer)
     

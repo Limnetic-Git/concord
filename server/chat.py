@@ -51,11 +51,18 @@ class ChatsManager:
             chats_history.append(self.chats[chat_id].__dict__)
         return chats_history
 
-    def add_message_to_chat(self, chat_id: str, message_text: str, author_login: str):
-        self.chats[chat_id].messages.append({
+    def add_message_to_chat(self, server_socket, accounts_manager, chat_id: str, message_text: str, author_login: str):
+        new_message = {
             "message_text": message_text,
             "author_login": author_login,
-        })
+        }
+        self.chats[chat_id].messages.append(new_message)
+        new_message['chat_id'] = chat_id
+        for account in self.chats[chat_id].members:
+            account_id = account['id']
+            accounts_manager.accounts[account_id].new_messages.append(new_message)
+            print(accounts_manager.accounts[account_id].__dict__)
+            
 
         
 

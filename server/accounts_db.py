@@ -7,6 +7,7 @@ class Account:
     login: str
     password_hash: str
     chats_ids: list #List[str]
+    new_messages: list #List[dict]
     
 class AccountsManager:
     def __init__(self):
@@ -17,7 +18,7 @@ class AccountsManager:
         """Создаёт аккаунт"""
         if self.__check_login_uniqueness(login): # Если аккаунта с таким логином нет
             new_id = f'{self.id:09d}'
-            self.accounts[new_id] = Account(new_id, login, password_hash, [])
+            self.accounts[new_id] = Account(new_id, login, password_hash, [], [])
             self.id += 1
             return 1100, new_id# Аккаунт создан
         else: # Если аккаунт с таким логином уже существует

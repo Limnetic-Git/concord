@@ -36,6 +36,9 @@ class ClientSocket:
             self.incoming_pack = connection.receive(20480, raw=False)
             if 'request_answer' in self.incoming_pack: # Если сервер отвечает на наш запрос
                 self.last_request_answer = self.incoming_pack['request_answer'].copy()
+            if 'new_messages' in self.incoming_pack:
+                if self.incoming_pack['new_messages']: # Если нам пришли новые сообщения
+                    print(self.incoming_pack['new_messages'])
                 
     def wait_for_request_answer(self, request_type: str) -> dict:
         """Ждёт пока не получил ответ на заданный запрос и возвращает его"""
