@@ -26,10 +26,10 @@ class ChatsManager:
             if account_id:
                 members.append(accounts_manager.accounts[account_id])
                 if self.add_member_to_chat(current_chat_id, members[-1]) == 2000:
-                    return 2000 # Аккаунт уже в чате
+                    return 2000, None # Аккаунт уже в чате
             else:
-                return 2001 # Аккаунт с таким логином не найден
-        return 2100 # Успех
+                return 2001, None # Аккаунт с таким логином не найден
+        return 2100, self.chats[current_chat_id]  # Успех
         
     def add_member_to_chat(self, chat_id: str, member):
         """Добавляет клиента в указанный чат"""
@@ -42,27 +42,43 @@ class ChatsManager:
         
         else:
             return 2000 # Пользователь уже в чате
+        
+    def __get_chat_history(self, chat_id: str, number: int):
+        answer = self.chats[chat_id].__dict__
+        answer['messages'] = answer['messages'][:number]
+        return answer
     
+        
     def chats_history_for_account(self, accounts_manager, account_id: str):
         """Возвращает чаты (целиком) в которых есть указанный аккаунт"""
         chats_ids = accounts_manager.accounts[account_id].chats_ids
         chats_history = []
         for chat_id in chats_ids:
-            chats_history.append(self.chats[chat_id].__dict__)
+            chats_history.append(self.__get_chat_history(chat_id, 30))
         return chats_history
+    
+    
 
-    def add_message_to_chat(self, server_socket, accounts_manager, chat_id: str, message_text: str, author_login: str):
+    def message_registation(self, accounts_manager, chat_id: str, message_text: str, author_login: str):
+        """Добавляет сообщение в чат и рассылает конкретно это новое сообщение всем участникам чата в сети"""
         new_message = {
             "message_text": message_text,
             "author_login": author_login,
         }
-        self.chats[chat_id].messages.append(new_message)
+        self.chats[chat_id].messages.append(new_message.copy())
         new_message['chat_id'] = chat_id
+        new_message['type'] = "message"
         for account in self.chats[chat_id].members:
             account_id = account['id']
-            accounts_manager.accounts[account_id].new_messages.append(new_message)
-            print(accounts_manager.accounts[account_id].__dict__)
-            
+            accounts_manager.accounts[account_id].new.append(new_message)
+        
+    def new_chat_registration(self, accounts_manager, chat, account_id):
+        new_chat = {
+            "type": 'chat',
+            "chat": chat.__dict__,
+            }
+        for account in chat.members:
+            accounts_manager.accounts[account['id']].new.append(new_chat)
 
         
 

@@ -1,4 +1,3 @@
 INFO:root:TCP-server socket (127.0.0.2:1234) has been successfully created
-INFO:root:Created connection with 127.0.0.1:58762
-INFO:root:Created connection with 127.0.0.1:44028
-INFO:root:Created connection with 127.0.0.1:60008
+INFO:root:Created connection with 127.0.0.1:53188
+INFO:root:Created connection with 127.0.0.1:35262

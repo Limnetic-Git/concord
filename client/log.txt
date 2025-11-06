@@ -1,2 +1,1 @@
 INFO:root:TCP-client socket (127.0.0.2:1234) has been successfully created
-ERROR:root:[Errno 104] Connection reset by peer

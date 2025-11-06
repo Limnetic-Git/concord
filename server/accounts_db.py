@@ -7,7 +7,7 @@ class Account:
     login: str
     password_hash: str
     chats_ids: list #List[str]
-    new_messages: list #List[dict]
+    new: list #List[dict]
     
 class AccountsManager:
     def __init__(self):
