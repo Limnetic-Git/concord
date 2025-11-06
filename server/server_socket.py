@@ -79,7 +79,8 @@ class ServerSocket:
                             self.accounts_manager,
                             incoming_pack['request']['chat_id'],
                             incoming_pack['request']['message_text'],
-                            incoming_pack['request']['author_login'])
+                            incoming_pack['request']['author_login'],
+                            incoming_pack['request']['timestamp']),
                                              }
             if treading_account_id:
                 new_pack = []

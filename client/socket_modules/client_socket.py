@@ -38,8 +38,8 @@ class ClientSocket:
                 self.last_request_answer = self.incoming_pack['request_answer'].copy()
             if 'new' in self.incoming_pack:
                 if self.incoming_pack['new']: # Если нам пришли новые сообщения
-                    #print(f"!!!! {self.incoming_pack['new']}")
-                    pass #TODO: сделать добавление новых сообщений или новых чатов в интерфейс
+                    print(f"!!!! {self.incoming_pack['new']}")
+                    #pass #TODO: сделать добавление новых сообщений или новых чатов в интерфейс
                     
     def wait_for_request_answer(self, request_type: str) -> dict:
         """Ждёт пока не получил ответ на заданный запрос и возвращает его"""
@@ -91,6 +91,7 @@ class ClientSocket:
             "chat_id": chat_id,
             "message_text": message_text,
             "author_login": author_login,
+            "timestamp": int(time.time()),
             })
         
     

@@ -59,11 +59,12 @@ class ChatsManager:
     
     
 
-    def message_registation(self, accounts_manager, chat_id: str, message_text: str, author_login: str):
+    def message_registation(self, accounts_manager, chat_id: str, message_text: str, author_login: str, timestamp: int):
         """Добавляет сообщение в чат и рассылает конкретно это новое сообщение всем участникам чата в сети"""
         new_message = {
             "message_text": message_text,
             "author_login": author_login,
+            "timestamp": timestamp,
         }
         self.chats[chat_id].messages.append(new_message.copy())
         new_message['chat_id'] = chat_id
