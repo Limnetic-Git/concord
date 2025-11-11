@@ -44,6 +44,7 @@ class ChatsManager:
             return 2000 # Пользователь уже в чате
         
     def __get_chat_history(self, chat_id: str, number: int):
+        """Возвращает последние number сообщений в чате"""
         answer = self.chats[chat_id].__dict__
         answer['messages'] = answer['messages'][:number]
         return answer

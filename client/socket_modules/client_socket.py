@@ -2,7 +2,14 @@ import socket_modules.pysocknet as pysocknet
 from _thread import *
 import time
 import hashlib
+from dataclasses import dataclass
 
+@dataclass
+class MyAccount:
+    login: str
+    id: str
+    chats_history: list#List[dict] 
+    
 class ClientSocket:
     def __init__(self, ip='127.0.0.1', port=1234):
         """Инициализация сокета клиента"""
@@ -13,6 +20,8 @@ class ClientSocket:
         self.pack = {} # То что бы будем отправлять серверу
         self.incoming_pack = {} # То что мы будем получать от сервера
         self.last_request_answer = None # Ответ сервера на наш последний таск который мы его отсылали
+        
+        self.client_account = MyAccount(None, None, []) # Аккаунт клиент
         
         connection = pysocknet.TCPClientConnection(self.ip, self.port)
         start_new_thread(self.__socket_tread, (connection,))
@@ -37,7 +46,7 @@ class ClientSocket:
             if 'request_answer' in self.incoming_pack: # Если сервер отвечает на наш запрос
                 self.last_request_answer = self.incoming_pack['request_answer'].copy()
             if 'new' in self.incoming_pack:
-                if self.incoming_pack['new']: # Если нам пришли новые сообщения
+                if self.incoming_pack['new']: # Если нам пришли новые ивенты
                     print(f"!!!! {self.incoming_pack['new']}")
                     #pass #TODO: сделать добавление новых сообщений или новых чатов в интерфейс
                     
@@ -47,7 +56,9 @@ class ClientSocket:
         while True:
             if self.last_request_answer:
                 if self.last_request_answer['type'] == request_type:
-                    return self.last_request_answer.copy()
+                    returning = self.last_request_answer.copy()
+                    self.last_request_answer = (None if self.last_request_answer == returning else self.last_request_answer)
+                    return returning
             if time.time() - start_time > 5:
                 raise TimeoutError(f'Timeout waiting for "{request_type}" response')
             time.sleep(0.01)

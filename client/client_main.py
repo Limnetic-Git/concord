@@ -6,7 +6,6 @@ from dataclasses import dataclass
 client_socket = ClientSocket('127.0.0.2', 1234)
 
 logged_in = False
-
 my_id = None
 my_login = None
 
