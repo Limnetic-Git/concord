@@ -5,4 +5,4 @@ from chat import ChatsManager
 if __name__ == "__main__":
     accounts_manager = AccountsManager()
     chats_manager = ChatsManager()
-    server_socket = ServerSocket(accounts_manager, chats_manager, '127.0.0.2', 1234)
+    server_socket = ServerSocket(accounts_manager, chats_manager, '127.0.0.1', 1234)

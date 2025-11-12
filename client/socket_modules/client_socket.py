@@ -17,9 +17,11 @@ class ClientSocket:
         self.port = port
         
         self.tasks_queue = [] # Список тасков (действий) которые отсылаются серверу (по одному за итерацию потока)
+        self.new_handler_function = None 
         self.pack = {} # То что бы будем отправлять серверу
         self.incoming_pack = {} # То что мы будем получать от сервера
         self.last_request_answer = None # Ответ сервера на наш последний таск который мы его отсылали
+        
         
         self.client_account = MyAccount(None, None, []) # Аккаунт клиент
         
@@ -32,7 +34,7 @@ class ClientSocket:
         hash_object = hashlib.sha256()
         hash_object.update(string.encode())
         return str(hash_object.hexdigest())
-
+    
     def __socket_tread(self, connection: pysocknet.TCPClientConnection):
         """Цикл общения клиента с сервером"""
         while True:
@@ -47,8 +49,8 @@ class ClientSocket:
                 self.last_request_answer = self.incoming_pack['request_answer'].copy()
             if 'new' in self.incoming_pack:
                 if self.incoming_pack['new']: # Если нам пришли новые ивенты
-                    print(f"!!!! {self.incoming_pack['new']}")
-                    #pass #TODO: сделать добавление новых сообщений или новых чатов в интерфейс
+                    if self.new_handler_function:
+                        self.new_handler_function(self.incoming_pack['new'])
                     
     def wait_for_request_answer(self, request_type: str) -> dict:
         """Ждёт пока не получил ответ на заданный запрос и возвращает его"""

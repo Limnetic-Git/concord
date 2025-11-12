@@ -3,7 +3,7 @@ from pprint import pprint
 from dataclasses import dataclass
 
 
-client_socket = ClientSocket('127.0.0.2', 1234)
+client_socket = ClientSocket('127.0.0.1', 1234)
 
 logged_in = False
 my_id = None
@@ -47,7 +47,6 @@ if logged_in:
     client_socket.chats_history_request(my_id)
     request_answer = client_socket.wait_for_request_answer('chats_history')
     print(request_answer)
-    
     
     action = input('1) Создать ЛС: ')
     if action == '1':

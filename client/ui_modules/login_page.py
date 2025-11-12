@@ -24,12 +24,17 @@ class LoginPage:
             self.client_socket.client_account.id = request_answer['id']
             self.client_socket.client_account.login = login
             print(self.client_socket.client_account)
+            self.message_board_page_action()
         else:
             print('ОШИБКА!')
             
     def register_page_action(self):
         self.frame.destroy()
-        self.window.open_page("register") 
+        self.window.open_page("register")
+        
+    def message_board_page_action(self):
+        self.frame.destroy()
+        self.window.open_page("message_board") 
         
     # --- UI элементы на странице: ---
     def UNPACK_welcome_text(self):

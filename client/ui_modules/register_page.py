@@ -19,20 +19,24 @@ class RegisterPage:
         self.frame.destroy()
         self.window.open_page("login")
         
+    def message_board_page_action(self):
+        self.frame.destroy()
+        self.window.open_page("message_board") 
+        
     def create_account_action(self):
-        login, password = self.login_field.get(), self.password_field.get()
-        self.client_socket.registration_request(login, password)
-        request_answer = self.client_socket.wait_for_request_answer('registration')
-        print(login, password, request_answer)
-        if request_answer['status'] == 1100:
-            self.client_socket.client_account.id = request_answer['id']
-            self.client_socket.client_account.login = login
-            print(self.client_socket.client_account)
-        else:
-            print('ОШИБКА!')
-
-        
-        
+        login, password, second_password = self.login_field.get(), self.password_field.get(), self.second_password_field.get()
+        if password == second_password:
+            self.client_socket.registration_request(login, password)
+            request_answer = self.client_socket.wait_for_request_answer('registration')
+            print(login, password, request_answer)
+            if request_answer['status'] == 1100:
+                self.client_socket.client_account.id = request_answer['id']
+                self.client_socket.client_account.login = login
+                print(self.client_socket.client_account)
+                self.message_board_page_action()
+            else:
+                print('ОШИБКА!')
+                
     # --- UI элементы на странице: ---
     def UNPACK_welcome_text(self):
         self.welcome_text = ctk.CTkLabel(

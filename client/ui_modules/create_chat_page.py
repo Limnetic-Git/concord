@@ -2,16 +2,10 @@ import customtkinter as ctk
 import random
 
 class CreateChatPage:
-    def __init__(self):
-        pass
-    
-    def open(self, **kwargs):
+    def open_page(self, window, client_socket):
+        self.window = window
+        self.client_socket = client_socket
         
-        self.window = kwargs['window']
-        self.client_socket = kwargs['client_socket']
-        self.account = kwargs['account'] 
-        
-    
         self.frame = ctk.CTkFrame(self.window.app, fg_color="transparent")
         self.frame.pack(expand=True, fill="both", padx=20, pady=20)
         
@@ -20,12 +14,10 @@ class CreateChatPage:
         self.UNPACK_create_chat_button()
         self.UNPACK_back_button()
     
-    
     def create_private_chat_action(self):
-        self.client_socket.create_chat_request([self.account.login, self.enter_nick_field.get()], 'private')
-        while not isinstance(self.client_socket.result, bool):
-            pass
-        self.client_socket.result = None
+        self.client_socket.create_private_chat_request('NONE', [self.client_socket.client_account.login, self.enter_nick_field.get()])
+        self.client_socket.wait_for_request_answer('create_private_chat')
+        self.back_action()
         
     def back_action(self):
         self.frame.destroy()
