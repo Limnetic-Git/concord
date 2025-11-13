@@ -90,6 +90,7 @@ class TCPServerConnection:
                 return ast.literal_eval(received_data)
         except socket.error as e:
             logging.error(e)
+            print(f'RECEIVED DATA: {received_data}')
             raise e
         
     def send(self, connection, packet: str):
