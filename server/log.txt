@@ -1,4 +1,18 @@
-INFO:root:TCP-server socket (127.0.0.2:1234) has been successfully created
-INFO:root:Created connection with 127.0.0.1:58280
-INFO:root:Created connection with 127.0.0.1:57912
-INFO:root:Created connection with 127.0.0.1:49718
+INFO:root:TCP-server socket (127.0.0.1:1234) has been successfully created
+INFO:root:Created connection with 127.0.0.1:48020
+ERROR:root:[Errno 104] Connection reset by peer
+INFO:root:Created connection with 127.0.0.1:41564
+ERROR:root:[Errno 104] Connection reset by peer
+INFO:root:Created connection with 127.0.0.1:48336
+ERROR:root:[Errno 104] Connection reset by peer
+INFO:root:Created connection with 127.0.0.1:52540
+INFO:root:Created connection with 127.0.0.1:38690
+INFO:root:Created connection with 127.0.0.1:38700
+INFO:root:Created connection with 127.0.0.1:42848
+ERROR:root:[Errno 104] Connection reset by peer
+INFO:root:Created connection with 127.0.0.1:42854
+INFO:root:Created connection with 127.0.0.1:58648
+INFO:root:Created connection with 127.0.0.1:59254
+ERROR:root:[Errno 104] Connection reset by peer
+INFO:root:Created connection with 127.0.0.1:35770
+INFO:root:Created connection with 127.0.0.1:41774

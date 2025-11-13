@@ -28,7 +28,6 @@ class RegisterPage:
         if password == second_password:
             self.client_socket.registration_request(login, password)
             request_answer = self.client_socket.wait_for_request_answer('registration')
-            print(login, password, request_answer)
             if request_answer['status'] == 1100:
                 self.client_socket.client_account.id = request_answer['id']
                 self.client_socket.client_account.login = login

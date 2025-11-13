@@ -5,12 +5,12 @@ from ui_modules.message_board_page import MainMessengerPage
 from ui_modules.create_chat_page import CreateChatPage
 from socket_modules.client_socket import ClientSocket
 
-client_socket = ClientSocket('127.0.0.2', 1234)
+client_socket = ClientSocket()#'89.110.90.193', 1234)
 
 class Window:
     def __init__(self):
-      #  ctk.set_appearance_mode("dark")  # "light", "dark", "system"
-        theme_name = "Blue"
+        #ctk.set_appearance_mode("system")  # "light", "dark", "system"
+        theme_name = "Harlequin"
         ctk.set_default_color_theme(f"themes/{theme_name}.json")  # "blue", "green", "dark-blue"
         
         self.app = ctk.CTk()

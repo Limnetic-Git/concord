@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from datetime import datetime
 
 class MainMessengerPage:
     def __init__(self):
@@ -8,15 +9,21 @@ class MainMessengerPage:
         self.message_frames = []
         self.is_page_ready = False  # Флаг готовности страницы (отрисовки)
         
+    @staticmethod
+    def timestamp_to_datetime(seconds: int) -> str:
+        return str(datetime.fromtimestamp(seconds))
+    
     def new_handler(self, new: list):
         """Обработчик новых событий от сервера"""
         print(f'DEBUG new_handler: {new}')
+        
+        ignoring_message_drawing = False
         
         # Проверяем, что мы на правильной странице И страница готова (чтоб не пытаться рисовать если мы не на этой странице)
         if (self.window.current_page != "message_board" or 
             not self.is_page_ready):
             print(f"DEBUG: Ignoring new events, current page is {self.window.current_page}, page ready: {self.is_page_ready}")
-            return
+            ignoring_message_drawing = True
             
         for action in new:
             if action['type'] == 'message':
@@ -36,13 +43,13 @@ class MainMessengerPage:
                         chat_found = True
                         
                         # Если это текущий открытый чат - показываем сообщение
-                        if self.current_chat_id == chat['id']:
+                        if not ignoring_message_drawing and self.current_chat_id == chat['id']:
                             print(f"Adding message to current chat: {new_message}")
                             self.add_message(new_message)
                         break
                 
                 # Если чат не найден, релоадим чаты
-                if not chat_found:
+                if not ignoring_message_drawing and not chat_found:
                     print("Chat not found, reloading chats...")
                     self.load_chats()
                     self.update_chats_list()
@@ -53,7 +60,8 @@ class MainMessengerPage:
                 if not chat_exists:
                     print(f"Adding new chat: {action['chat']}")
                     self.chats.append(action['chat'])
-                    self.add_chat_button(action['chat'])
+                    if not ignoring_message_drawing:
+                        self.add_chat_button(action['chat'])
                 
     def open_page(self, window, client_socket):
         self.window = window 
@@ -209,18 +217,36 @@ class MainMessengerPage:
         message_frame = ctk.CTkFrame(self.messages_frame)
         message_frame.pack(fill="x", padx=10, pady=5)
         
-        message_text = ctk.CTkLabel(
+        author_text = ctk.CTkLabel(
             message_frame, 
-            text=f"{message['author_login']}: {message['message_text']}",
-            font=("Arial", 14),
+            text=f"{message['author_login']}",
+            font=("Arial", 18, 'bold'),
             wraplength=600,
             justify="left"
         )
-        message_text.pack(padx=10, pady=5, anchor="w")
+        author_text.pack(padx=8, pady=5, anchor="w")
+        
+        message_text = ctk.CTkLabel(
+            message_frame, 
+            text=f"{message['message_text']}",
+            font=("Arial", 16),
+            wraplength=600,
+            justify="left"
+        )
+        message_text.pack(padx=10, pady=2, anchor="w")
+
+        timestamp_text = ctk.CTkLabel(
+            message_frame, 
+            text=f"{self.timestamp_to_datetime(message['timestamp'])}",
+            font=("Arial", 9, 'bold'),
+            wraplength=600,
+            justify="right"
+        )
+        timestamp_text.pack(padx=8, pady=2, anchor="w")
         
         self.message_frames.append(message_frame)
         print(f"Added message: {message['author_login']}: {message['message_text']}")
-        # Автоскролл вниз
+        # Автоскролл
         self.messages_frame._parent_canvas.yview_moveto(1.0)
     
     def create_input_field(self):
