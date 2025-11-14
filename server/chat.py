@@ -50,20 +50,18 @@ class ChatsManager:
     def __get_chat_history(self, chat_id: str, number: int):
         """Возвращает последние number сообщений в чате"""
         answer = self.chats[chat_id].__dict__
-        answer['messages'] = answer['messages'][:number]
+        answer['messages'] = answer['messages'][-number:]
         return answer
     
         
     def chats_history_for_account(self, accounts_manager, account_id: str):
-        """Возвращает чаты (целиком) в которых есть указанный аккаунт"""
+        """Возвращает чаты (последние 30 соо) в которых есть указанный аккаунт"""
         chats_ids = accounts_manager.accounts[account_id].chats_ids
         chats_history = []
         for chat_id in chats_ids:
             chats_history.append(self.__get_chat_history(chat_id, 30))
         return chats_history
     
-    
-
     def message_registation(self, accounts_manager, chat_id: str, message_text: str, author_login: str, timestamp: int):
         """Добавляет сообщение в чат и рассылает конкретно это новое сообщение всем участникам чата в сети"""
         new_message = {

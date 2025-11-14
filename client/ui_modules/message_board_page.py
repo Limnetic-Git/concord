@@ -125,6 +125,8 @@ class MainMessengerPage:
             font=("Arial", 18, "bold")
         )
         self.plus_button.pack(padx=5, pady=10, fill="x")
+        self.chats_frame.bind("<Button-4>", lambda e: self.chats_frame._parent_canvas.yview_scroll(-1, "units"))
+        self.chats_frame.bind("<Button-5>", lambda e: self.chats_frame._parent_canvas.yview_scroll(1, "units"))
     
     def create_message_area(self):
         """Создает область сообщений"""
@@ -147,8 +149,13 @@ class MainMessengerPage:
             self.message_area, height=100, corner_radius=10
         )
         self.input_frame.grid(row=1, column=0, sticky="ew", padx=10, pady=(5, 10))
+
+        self.messages_frame.bind("<Button-4>", lambda e: self.messages_frame._parent_canvas.yview_scroll(-1, "units"))
+        self.messages_frame.bind("<Button-5>", lambda e: self.messages_frame._parent_canvas.yview_scroll(1, "units"))
+        #self.messages_frame.bind("<MouseWheel>", lambda e: self.messages_frame._parent_canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"))
+        
         self.input_frame.grid_propagate(False)
-    
+
     def show_choose_chat_text(self):
         """Показывает текст выбора чата"""
         self.choose_chat_text = ctk.CTkLabel(
@@ -191,6 +198,8 @@ class MainMessengerPage:
         button.pack(padx=5, pady=5, fill="x")
         self.chat_buttons.append(button)
         print(f"Added chat button: {chat_name} (id: {chat['id']})")
+        button.bind("<Button-4>", lambda e: self.chats_frame._parent_canvas.yview_scroll(-1, "units"))
+        button.bind("<Button-5>", lambda e: self.chats_frame._parent_canvas.yview_scroll(1, "units"))
     
     def select_chat(self, chat_id):
         """Выбирает чат"""
@@ -230,7 +239,10 @@ class MainMessengerPage:
     def add_message(self, message):
         """Добавляет сообщение в список"""
         message_frame = ctk.CTkFrame(self.messages_frame)
-        message_frame.pack(fill="x", padx=10, pady=5)
+        
+        if message['author_login'] == self.client_socket.client_account.login:
+            message_frame.configure(border_color=ctk.ThemeManager.theme["CTkButton"]["fg_color"], border_width=2)
+        message_frame.pack(fill="x", padx=10, pady=5) #fill="x"
         
         author_text = ctk.CTkLabel(
             message_frame, 
@@ -263,6 +275,10 @@ class MainMessengerPage:
         print(f"Added message: {message['author_login']}: {message['message_text']}")
         # Автоскролл
         self.messages_frame._parent_canvas.yview_moveto(1.0)
+
+        message_frame.bind("<Button-4>", lambda e: self.messages_frame._parent_canvas.yview_scroll(-1, "units"))
+        message_frame.bind("<Button-5>", lambda e: self.messages_frame._parent_canvas.yview_scroll(1, "units"))
+        #message_frame.bind("<MouseWheel>", lambda e: self.messages_frame._parent_canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"))
     
     def create_input_field(self):
         """Создает поле ввода сообщения"""
@@ -279,7 +295,7 @@ class MainMessengerPage:
             corner_radius=10,
             font=("Arial", 14),
             wrap="word"
-        )
+        )  
         self.message_input.grid(row=0, column=0, sticky="nsew", padx=(10, 5), pady=10)
     
         self.message_input.insert("1.0", "Введите сообщение...")
