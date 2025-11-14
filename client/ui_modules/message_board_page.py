@@ -8,6 +8,7 @@ class MainMessengerPage:
         self.chat_buttons = []
         self.message_frames = []
         self.is_page_ready = False  # Флаг готовности страницы (отрисовки)
+        self.global_init = False
         
     @staticmethod
     def timestamp_to_datetime(seconds: int) -> str:
@@ -70,11 +71,14 @@ class MainMessengerPage:
         
         # Устанавливаем обработчик новых событий (функция которая выполняется при получении инфы о новых соо и чатах реалтайма)
         self.client_socket.new_handler_function = self.new_handler
-    
-        self.load_chats()
+        
+        if not self.global_init:
+            self.load_chats()
+            
         self.frame = ctk.CTkFrame(self.window.app, fg_color="transparent")
         self.frame.pack(expand=True, fill="both", padx=20, pady=20)
         
+        self.load_settings_button()
         self.create_chats_list()
         self.create_message_area()
         self.show_choose_chat_text()
@@ -82,8 +86,19 @@ class MainMessengerPage:
         self.update_chats_list()
         
         self.is_page_ready = True  # Страница готова
+        self.global_init = True
         print("DEBUG: Page is ready for events")
-    
+        
+    def load_settings_button(self):
+        self.settings_button = ctk.CTkButton(
+            self.frame,
+            #command=lambda ,
+            text='Настройки',
+            font=("Arial", 20, "bold"),
+        )
+        self.settings_button.pack(side='top', anchor="w", padx=8)
+        
+        
     def load_chats(self):
         """Загружает чаты с сервера"""
         print("Loading chats from server...")
@@ -101,7 +116,7 @@ class MainMessengerPage:
         self.chats_frame = ctk.CTkScrollableFrame(
             self.frame, width=250, height=600, corner_radius=15
         )
-        self.chats_frame.pack(side='left', anchor="nw", padx=5, pady=5, fill="y")
+        self.chats_frame.pack(side='left', anchor="nw", padx=5, pady=10, fill="y")
         
         # Кнопка создания чата
         self.plus_button = ctk.CTkButton(
@@ -116,7 +131,7 @@ class MainMessengerPage:
         self.message_area = ctk.CTkFrame(
             self.frame, width=800, height=600, corner_radius=15
         )
-        self.message_area.pack(side='left', padx=10, pady=5, expand=True, fill="both")
+        self.message_area.pack(side='left', padx=10, pady=10, expand=True, fill="both")
         self.message_area.grid_rowconfigure(0, weight=1)
         self.message_area.grid_rowconfigure(1, weight=0) 
         self.message_area.grid_columnconfigure(0, weight=1)
@@ -233,7 +248,7 @@ class MainMessengerPage:
             wraplength=600,
             justify="left"
         )
-        message_text.pack(padx=10, pady=2, anchor="w")
+        message_text.pack(padx=13, pady=2, anchor="w")
 
         timestamp_text = ctk.CTkLabel(
             message_frame, 

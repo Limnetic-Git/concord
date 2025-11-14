@@ -16,6 +16,10 @@ class ChatsManager:
     
     def create_chat(self, accounts_manager, chat_type: str, chat_name: str, members_logins: list):
         """Создаёт чат с указанными параметрами"""
+        for member_login in members_logins:
+            if not accounts_manager.find_account_by_login(member_login):
+                return 2001, None # Аккаунт с таким логином не найден
+        
         current_chat_id = f'{self.id:09d}'
         self.chats[current_chat_id] = Chat(current_chat_id, chat_type, chat_name, [], [])
         self.id += 1
