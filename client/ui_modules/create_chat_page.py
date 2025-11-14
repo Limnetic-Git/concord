@@ -14,9 +14,15 @@ class CreateChatPage:
         self.UNPACK_back_button()
     
     def create_private_chat_action(self):
-        self.client_socket.create_private_chat_request('NONE', [self.client_socket.client_account.login, self.enter_nick_field.get()])
-        self.client_socket.wait_for_request_answer('create_private_chat')
-        #self.back_action()
+        if self.client_socket.client_account.login != self.enter_nick_field.get():
+            self.client_socket.create_private_chat_request('NONE', [self.client_socket.client_account.login, self.enter_nick_field.get()])
+            request_answer = self.client_socket.wait_for_request_answer('create_private_chat')
+            if request_answer['status'] == 2001:
+                self.enter_nick_field.configure(fg_color='#a51f1f')
+            else:
+                self.back_action()
+        else:
+            self.enter_nick_field.configure(fg_color='#a51f1f')
         
     def back_action(self):
         self.frame.destroy()

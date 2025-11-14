@@ -78,7 +78,7 @@ class MainMessengerPage:
         self.frame = ctk.CTkFrame(self.window.app, fg_color="transparent")
         self.frame.pack(expand=True, fill="both", padx=20, pady=20)
         
-        self.load_settings_button()
+     #   self.load_settings_button()
         self.create_chats_list()
         self.create_message_area()
         self.show_choose_chat_text()

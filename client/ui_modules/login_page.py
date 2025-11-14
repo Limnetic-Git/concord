@@ -25,8 +25,13 @@ class LoginPage:
             self.client_socket.client_account.login = login
             print(self.client_socket.client_account)
             self.message_board_page_action()
+        elif request_answer['status'] == 1001:
+            self.wrong_password_error()
+        elif request_answer['status'] == 1002:
+            self.wrong_login_error()
         else:
-            print('ОШИБКА!')
+            pass
+            
             
     def register_page_action(self):
         self.frame.destroy()
@@ -35,7 +40,23 @@ class LoginPage:
     def message_board_page_action(self):
         self.frame.destroy()
         self.window.open_page("message_board") 
+    
+    def reset_errors_changes(self):
+        self.login_field.configure(fg_color=ctk.ThemeManager.theme["CTkEntry"]["fg_color"])
+        self.password_field.configure(fg_color=ctk.ThemeManager.theme["CTkEntry"]["fg_color"])
+        self.welcome_text.configure(text="Добрый день!")
         
+    def wrong_password_error(self):
+        #self.login_field.configure(fg_color=None, hover_color=None)
+        self.reset_errors_changes()
+        self.password_field.configure(fg_color='#a51f1f')
+        self.welcome_text.configure(text="Неверный пароль!")
+        
+    def wrong_login_error(self):
+        self.reset_errors_changes()
+        self.login_field.configure(fg_color='#a51f1f')
+        self.welcome_text.configure(text="Аккаунта с таким логином не существует!")
+    
     # --- UI элементы на странице: ---
     def UNPACK_welcome_text(self):
         self.welcome_text = ctk.CTkLabel(

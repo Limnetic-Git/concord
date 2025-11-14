@@ -5,7 +5,7 @@ from ui_modules.message_board_page import MainMessengerPage
 from ui_modules.create_chat_page import CreateChatPage
 from socket_modules.client_socket import ClientSocket
 
-client_socket = ClientSocket('127.0.0.2', 1234)#'89.110.90.193', 1234)
+client_socket = ClientSocket('127.0.0.1', 1234)#'89.110.90.193', 1234)
 
 class Window:
     def __init__(self):

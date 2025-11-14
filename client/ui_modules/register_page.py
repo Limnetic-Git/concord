@@ -5,6 +5,8 @@ class RegisterPage:
         self.window = window
         self.client_socket = client_socket
         
+        self.allowed_alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890_"
+        
         self.frame = ctk.CTkFrame(self.window.app, fg_color="transparent")
         self.frame.pack(expand=True, fill="both", padx=20, pady=20)
         
@@ -26,16 +28,61 @@ class RegisterPage:
     def create_account_action(self):
         login, password, second_password = self.login_field.get(), self.password_field.get(), self.second_password_field.get()
         if password == second_password:
-            self.client_socket.registration_request(login, password)
-            request_answer = self.client_socket.wait_for_request_answer('registration')
-            if request_answer['status'] == 1100:
-                self.client_socket.client_account.id = request_answer['id']
-                self.client_socket.client_account.login = login
-                print(self.client_socket.client_account)
-                self.message_board_page_action()
+            if len(password) >= 8:
+                if self.check_login_alphabet_rules(login):
+                    self.client_socket.registration_request(login, password)
+                    request_answer = self.client_socket.wait_for_request_answer('registration')
+                    if request_answer['status'] == 1100:
+                        self.client_socket.client_account.id = request_answer['id']
+                        self.client_socket.client_account.login = login
+                        print(self.client_socket.client_account)
+                        self.message_board_page_action()
+                    elif request_answer['status'] == 1000:
+                        self.login_exists_error()
+                    else:
+                        print('ОШИБКА!')
+                else:
+                    self.bad_login_error()
             else:
-                print('ОШИБКА!')
-                
+                self.password_too_short_error()
+        else:
+            self.passwords_not_same_error()
+
+    def reset_errors_changes(self):
+        self.login_field.configure(fg_color=ctk.ThemeManager.theme["CTkEntry"]["fg_color"])
+        self.password_field.configure(fg_color=ctk.ThemeManager.theme["CTkEntry"]["fg_color"])
+        self.second_password_field.configure(fg_color=ctk.ThemeManager.theme["CTkEntry"]["fg_color"])
+        self.welcome_text.configure(text="Рады знакомству!")
+        
+    def login_exists_error(self):
+        self.reset_errors_changes()
+        self.login_field.configure(fg_color='#a51f1f')
+        self.welcome_text.configure(text="Аккаунт с таким логином уже существует!")
+    
+    def passwords_not_same_error(self):
+        self.reset_errors_changes()
+        self.password_field.configure(fg_color='#a51f1f')
+        self.second_password_field.configure(fg_color='#a51f1f')
+        self.welcome_text.configure(text="Пароли не совпадают!")
+        
+    def bad_login_error(self):
+        self.reset_errors_changes()
+        self.login_field.configure(fg_color='#a51f1f')
+        self.welcome_text.configure(text='В логине допустимы только a-Z, 0-9 и "_"!')
+    
+    def password_too_short_error(self):
+        self.reset_errors_changes()
+        self.password_field.configure(fg_color='#a51f1f')
+        self.second_password_field.configure(fg_color='#a51f1f')
+        self.welcome_text.configure(text='Пароль должен быть минимум из 8 символов!')
+        
+    def check_login_alphabet_rules(self, login: str):
+        """Проверяет, разрешён ли такой логин"""
+        for letter in login:
+            if not letter in self.allowed_alphabet:
+                return False
+        return True
+    
     # --- UI элементы на странице: ---
     def UNPACK_welcome_text(self):
         self.welcome_text = ctk.CTkLabel(
