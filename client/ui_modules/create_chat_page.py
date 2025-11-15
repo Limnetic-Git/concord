@@ -39,7 +39,6 @@ class CreateChatPage:
         self.global_chat_frame.pack(padx=10, pady=15)
         self.UNPACK_create_chat_button()
     
-    
     def UNPACK_enter_nick_field(self):
         self.enter_nick_field = ctk.CTkEntry(
             self.private_chat_frame,

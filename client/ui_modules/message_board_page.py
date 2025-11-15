@@ -7,11 +7,13 @@ class MainMessengerPage:
         self.chats = []
         self.chat_buttons = []
         self.message_frames = []
+        self.member_frames = []
         self.is_page_ready = False  # Флаг готовности страницы (отрисовки)
         self.global_init = False
         
     @staticmethod
     def timestamp_to_datetime(seconds: int) -> str:
+        """Переводит time.time в время на компьютере"""
         return str(datetime.fromtimestamp(seconds))
     
     def new_handler(self, new: list):
@@ -80,6 +82,7 @@ class MainMessengerPage:
         
      #   self.load_settings_button()
         self.create_chats_list()
+        self.create_members_list()
         self.create_message_area()
         self.show_choose_chat_text()
         
@@ -88,17 +91,7 @@ class MainMessengerPage:
         self.is_page_ready = True  # Страница готова
         self.global_init = True
         print("DEBUG: Page is ready for events")
-        
-    def load_settings_button(self):
-        self.settings_button = ctk.CTkButton(
-            self.frame,
-            #command=lambda ,
-            text='Настройки',
-            font=("Arial", 20, "bold"),
-        )
-        self.settings_button.pack(side='top', anchor="w", padx=8)
-        
-        
+    
     def load_chats(self):
         """Загружает чаты с сервера"""
         print("Loading chats from server...")
@@ -110,11 +103,79 @@ class MainMessengerPage:
         else:
             self.chats = []
             print("No chats loaded")
+            
+    def create_members_list(self):
+        """Создает область списка участников чата"""
+        self.members_frame = ctk.CTkScrollableFrame(
+            self.frame, width=150, height=600, corner_radius=15
+        )
+        self.members_frame.pack(side='right', anchor="ne", padx=5, pady=10, fill="y")
+        
+        # Заголовок списка участников
+        self.members_title = ctk.CTkLabel(
+            self.members_frame,
+            text="Участники",
+            font=("Arial", 16, "bold")
+        )
+        self.members_title.pack(pady=(10, 15))
+        
+    def update_members_list(self):
+        """Обновляет список участников текущего чата"""
+        # Очищаем старые элементы
+        for frame in self.member_frames:
+            frame.destroy()
+        self.member_frames.clear()
+        
+        if not self.current_chat_id:
+            # Если чат не выбран, показываем сообщение
+            no_chat_label = ctk.CTkLabel(
+                self.members_frame,
+                text="Выберите чат",
+                font=("Arial", 14),
+                text_color="gray"
+            )
+            no_chat_label.pack(pady=10)
+            self.member_frames.append(no_chat_label)
+            return
+            
+        # Находим текущий чат
+        current_chat = self.find_chat_by_id(self.current_chat_id)
+        if not current_chat:
+            return
+            
+        # Отображаем участников чата
+        for member in current_chat.get('members', []):
+            self.add_member_item(member)
     
+    def add_member_item(self, member):
+        """Добавляет элемент участника в список"""
+        member_frame = ctk.CTkFrame(
+            self.members_frame, 
+            height=40,
+            corner_radius=10
+        )
+        member_frame.pack(fill="x", padx=5, pady=2)
+        member_frame.pack_propagate(False)
+        
+        # Определяем цвет рамки для текущего пользователя
+        if member['login'] == self.client_socket.client_account.login:
+            member_frame.configure(border_color=ctk.ThemeManager.theme["CTkButton"]["fg_color"], border_width=2)
+        
+        # Логин участника
+        member_label = ctk.CTkLabel(
+            member_frame,
+            text=member['login'],
+            font=("Arial", 14),
+            anchor="w"
+        )
+        member_label.pack(fill="both", expand=True, padx=10, pady=5)
+        
+        self.member_frames.append(member_frame)
+        
     def create_chats_list(self):
         """Создает область списка чатов"""
         self.chats_frame = ctk.CTkScrollableFrame(
-            self.frame, width=250, height=600, corner_radius=15
+            self.frame, width=200, height=600, corner_radius=15
         )
         self.chats_frame.pack(side='left', anchor="nw", padx=5, pady=10, fill="y")
         
@@ -213,6 +274,7 @@ class MainMessengerPage:
         self.clear_messages()
         self.show_messages()
         self.create_input_field()
+        self.update_members_list()  # Обновляем список участников
     
     def clear_messages(self):
         """Очищает сообщения"""
@@ -242,7 +304,7 @@ class MainMessengerPage:
         
         if message['author_login'] == self.client_socket.client_account.login:
             message_frame.configure(border_color=ctk.ThemeManager.theme["CTkButton"]["fg_color"], border_width=2)
-        message_frame.pack(fill="x", padx=10, pady=5) #fill="x"
+        message_frame.pack(fill="x", padx=10, pady=5) 
         
         author_text = ctk.CTkLabel(
             message_frame, 
@@ -258,7 +320,7 @@ class MainMessengerPage:
             text=f"{message['message_text']}",
             font=("Arial", 16),
             wraplength=600,
-            justify="left"
+            justify="left",
         )
         message_text.pack(padx=13, pady=2, anchor="w")
 

@@ -18,14 +18,17 @@ class RegisterPage:
         self.UNPACK_back_button()
                  
     def back_action(self):
+        """Вернуться на страницу логина"""
         self.frame.destroy()
         self.window.open_page("login")
         
     def message_board_page_action(self):
+        """Перейти на страницу месседж-борда"""
         self.frame.destroy()
         self.window.open_page("message_board") 
         
     def create_account_action(self):
+        """Делает запрос на создание аккаунта"""
         login, password, second_password = self.login_field.get(), self.password_field.get(), self.second_password_field.get()
         if password == second_password:
             if len(password) >= 8:
@@ -49,6 +52,7 @@ class RegisterPage:
             self.passwords_not_same_error()
 
     def reset_errors_changes(self):
+        """Ресетает виджеты от их изменений из-за ошибок"""
         self.login_field.configure(fg_color=ctk.ThemeManager.theme["CTkEntry"]["fg_color"])
         self.password_field.configure(fg_color=ctk.ThemeManager.theme["CTkEntry"]["fg_color"])
         self.second_password_field.configure(fg_color=ctk.ThemeManager.theme["CTkEntry"]["fg_color"])
