@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from ui_modules.login_page import LoginPage
 from ui_modules.register_page import RegisterPage
-from ui_modules.message_board_page import MainMessengerPage
+from ui_modules.main_page.main import MainMessengerPage
 from ui_modules.create_chat_page import CreateChatPage
 from socket_modules.client_socket import ClientSocket
 
