@@ -53,4 +53,3 @@ class AccountsManager:
                 return key  # Успех
         else: # Не нашёл аккаунта с таким логином
             return None # Неудача
-

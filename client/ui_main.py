@@ -10,8 +10,8 @@ client_socket = ClientSocket('127.0.0.2', 1234)#'89.110.90.193', 1234)
 class Window:
     def __init__(self):
         #ctk.set_appearance_mode("system")  # "light", "dark", "system"
-        theme_name = "Harlequin"
-        ctk.set_default_color_theme(f"dark-blue")#themes/{theme_name}.json")  # "blue", "green", "dark-blue"
+        theme_name = "Blue"
+        ctk.set_default_color_theme(f"themes/{theme_name}.json")  # "blue", "green", "dark-blue"
         
         self.app = ctk.CTk()
         self.app.title("Concord")

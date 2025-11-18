@@ -52,7 +52,6 @@ class ServerSocket:
                         self.__clear_new_messages(treading_account_id)
                     
                 elif incoming_pack['request']['type'] == 'create_private_chat':
-                    
                     status, chat = self.chats_manager.create_chat(
                                                     self.accounts_manager,
                                                     incoming_pack['request']['chat_type'],
@@ -65,13 +64,27 @@ class ServerSocket:
                     if chat: # чат создался
                         self.chats_manager.new_chat_registration(self.accounts_manager, chat, account_id)
                         
+                elif incoming_pack['request']['type'] == 'create_group_chat':
+                    status, chat = self.chats_manager.create_chat(
+                                                    self.accounts_manager,
+                                                    incoming_pack['request']['chat_type'],
+                                                    incoming_pack['request']['chat_name'],
+                                                    [self.accounts_manager.accounts[treading_account_id].login])
+                    pack['request_answer'] = {
+                                        'type': 'create_group_chat',
+                                        'status': status,
+                                        }
+                    if chat: # чат создался
+                        self.chats_manager.new_chat_registration(self.accounts_manager, chat, account_id)
+                        
                 elif incoming_pack['request']['type'] == 'chats_history':
                     pack['request_answer'] = {
                                         'type': 'chats_history',
                                         'chats_history': self.chats_manager.chats_history_for_account(
                                                             self.accounts_manager,
-                                                            incoming_pack['request']['id']),
+                                                            treading_account_id),
                                         }
+                    
                 elif incoming_pack['request']['type'] == 'message':
                     pack['request_answer'] = {
                         'type': 'message',
@@ -82,6 +95,15 @@ class ServerSocket:
                             incoming_pack['request']['author_login'],
                             incoming_pack['request']['timestamp']),
                                              }
+                elif incoming_pack['request']['type'] == 'join_group':
+                    pack['request_answer'] = {
+                                        'type': 'join_group',
+                                        'chats_history': self.chats_manager.join_to_group_by_invite_code(
+                                                            self.accounts_manager,
+                                                            treading_account_id,
+                                                            incoming_pack['request']['invite_code']),
+                                        }
+                    
             if treading_account_id:
                 new_pack = []
                 

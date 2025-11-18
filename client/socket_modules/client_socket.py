@@ -89,12 +89,19 @@ class ClientSocket:
             "chat_type": 'PRIVATE',
             "members_logins": members_logins,
             })
+        
+    def create_group_chat_request(self, chat_name: str):
+        """Создаёт запрос на создание группового чата (сервера)"""
+        self.tasks_queue.append({
+            "type": 'create_group_chat',
+            "chat_name": chat_name,
+            "chat_type": 'GROUP',
+            })
     
     def chats_history_request(self, account_id: str):
         """Создаёт запрос на историю текстовых чатов в которых состоит аккаунт"""
         self.tasks_queue.append({
             "type": 'chats_history',
-            "id": account_id,
             })
         
     def message_request(self, chat_id: str, message_text: str, author_login: str):
@@ -105,6 +112,13 @@ class ClientSocket:
             "message_text": message_text,
             "author_login": author_login,
             "timestamp": int(time.time()),
+            })
+        
+    def join_group_request(self, invite_code: str):
+        """Создаёт запрос на вступление в группу по инвайт-коду"""
+        self.tasks_queue.append({
+            "type": 'join_group',
+            "invite_code": invite_code,
             })
         
     

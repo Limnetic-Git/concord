@@ -10,7 +10,9 @@ class CreateChatPage:
         self.frame.pack(expand=True, fill="both", padx=20, pady=20)
         
         self.private_chat_area()
-        self.global_chat_area()
+        self.group_chat_area()
+        self.join_group_area()
+
         self.UNPACK_back_button()
     
     def create_private_chat_action(self):
@@ -23,6 +25,29 @@ class CreateChatPage:
                 self.back_action()
         else:
             self.enter_nick_field.configure(fg_color='#a51f1f')
+    
+    def create_group_chat_action(self):
+        if self.enter_group_name_field.get():
+            self.client_socket.create_group_chat_request(self.enter_group_name_field.get())
+            request_answer = self.client_socket.wait_for_request_answer('create_group_chat')
+            if request_answer['status'] == 2001:
+                self.enter_group_name_field.configure(fg_color='#a51f1f')
+            else:
+                self.back_action()
+        else:
+            self.enter_group_name_field.configure(fg_color='#a51f1f')
+    
+    def join_group_action(self):
+        print(self.enter_group_invite_field.get())
+        if self.enter_group_invite_field.get():
+            self.client_socket.join_group_request(self.enter_group_invite_field.get())
+            request_answer = self.client_socket.wait_for_request_answer('join_group')
+            if request_answer['status'] == 2001:
+                self.enter_group_invite_field.configure(fg_color='#a51f1f')
+            else:
+                self.back_action()
+        else:
+            self.enter_group_invite_field.configure(fg_color='#a51f1f')
         
     def back_action(self):
         self.frame.destroy()
@@ -34,11 +59,18 @@ class CreateChatPage:
         self.UNPACK_enter_nick_field()
         self.UNPACK_create_private_chat_button()
     
-    def global_chat_area(self):
-        self.global_chat_frame = ctk.CTkFrame(self.frame)
-        self.global_chat_frame.pack(padx=10, pady=15)
+    def group_chat_area(self):
+        self.group_chat_frame = ctk.CTkFrame(self.frame)
+        self.group_chat_frame.pack(padx=10, pady=15)
+        self.UNPACK_enter_group_name_field()
         self.UNPACK_create_chat_button()
     
+    def join_group_area(self):
+        self.join_group_frame = ctk.CTkFrame(self.frame)
+        self.join_group_frame.pack(padx=10, pady=15)
+        self.UNPACK_enter_group_invite_code_field()
+        self.UNPACK_join_group_button()
+        
     def UNPACK_enter_nick_field(self):
         self.enter_nick_field = ctk.CTkEntry(
             self.private_chat_frame,
@@ -46,6 +78,22 @@ class CreateChatPage:
             width=300,
             height=60)
         self.enter_nick_field.pack(padx=5, pady=5)
+
+    def UNPACK_enter_group_name_field(self):
+        self.enter_group_name_field = ctk.CTkEntry(
+            self.group_chat_frame,
+            placeholder_text="Введите название для чата",
+            width=300,
+            height=60)
+        self.enter_group_name_field.pack(padx=5, pady=5)
+        
+    def UNPACK_enter_group_invite_code_field(self):
+        self.enter_group_invite_field = ctk.CTkEntry(
+            self.join_group_frame,
+            placeholder_text="Введите инвайт-код группы",
+            width=300,
+            height=60)
+        self.enter_group_invite_field.pack(padx=5, pady=5)
     
     def UNPACK_create_private_chat_button(self):
         self.create_private_chat_button = ctk.CTkButton(
@@ -59,13 +107,23 @@ class CreateChatPage:
     
     def UNPACK_create_chat_button(self):
         self.create_chat_button = ctk.CTkButton(
-            self.global_chat_frame,
-            text="Создать многопользовательский чат",
-            command=lambda: print('!'), 
+            self.group_chat_frame,
+            text="Создать групповой чат",
+            command=lambda: self.create_group_chat_action(), 
             width=300,
             height=40
         )
         self.create_chat_button.pack(padx=5, pady=5)
+        
+    def UNPACK_join_group_button(self):
+        self.join_group_button = ctk.CTkButton(
+            self.join_group_frame,
+            text="Присоединиться к группе",
+            command=lambda: self.join_group_action(), 
+            width=300,
+            height=40
+        )
+        self.join_group_button.pack(padx=5, pady=5)
         
     def UNPACK_back_button(self):
         self.back_button = ctk.CTkButton(

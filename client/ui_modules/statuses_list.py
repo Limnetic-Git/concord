@@ -11,6 +11,7 @@ statuses = {
     
     2000: "Account already in this chat",
     2001: "There is no account with this login",
+    2002: "Invite code does not exist",
     
     }
 
