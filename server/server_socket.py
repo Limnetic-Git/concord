@@ -62,7 +62,7 @@ class ServerSocket:
                                         'status': status,
                                         }
                     if chat: # чат создался
-                        self.chats_manager.new_chat_registration(self.accounts_manager, chat, account_id)
+                        self.chats_manager.update_chat_data_realtime(self.accounts_manager, chat, account_id)
                         
                 elif incoming_pack['request']['type'] == 'create_group_chat':
                     status, chat = self.chats_manager.create_chat(
@@ -75,7 +75,7 @@ class ServerSocket:
                                         'status': status,
                                         }
                     if chat: # чат создался
-                        self.chats_manager.new_chat_registration(self.accounts_manager, chat, account_id)
+                        self.chats_manager.update_chat_data_realtime(self.accounts_manager, chat, account_id)
                         
                 elif incoming_pack['request']['type'] == 'chats_history':
                     pack['request_answer'] = {
@@ -84,7 +84,7 @@ class ServerSocket:
                                                             self.accounts_manager,
                                                             treading_account_id),
                                         }
-                    
+
                 elif incoming_pack['request']['type'] == 'message':
                     pack['request_answer'] = {
                         'type': 'message',
@@ -96,13 +96,16 @@ class ServerSocket:
                             incoming_pack['request']['timestamp']),
                                              }
                 elif incoming_pack['request']['type'] == 'join_group':
-                    pack['request_answer'] = {
-                                        'type': 'join_group',
-                                        'chats_history': self.chats_manager.join_to_group_by_invite_code(
+                    status, chat = self.chats_manager.join_to_group_by_invite_code(
                                                             self.accounts_manager,
                                                             treading_account_id,
-                                                            incoming_pack['request']['invite_code']),
-                                        }
+                                                            incoming_pack['request']['invite_code'])
+                    pack['request_answer'] = {
+                                        'type': 'join_group',
+                                        'status': status,
+                                                        }
+                    if chat:
+                        self.chats_manager.update_chat_data_realtime(self.accounts_manager, chat, account_id)
                     
             if treading_account_id:
                 new_pack = []

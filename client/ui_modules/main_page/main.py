@@ -44,23 +44,32 @@ class MainMessengerPage:
                         chat_found = True
                         
                         if not ignoring_message_drawing and self.current_chat_id == chat['id']:
-                            print(f"Adding message to current chat: {new_message}")
+                            print(f"DEBUG: Adding message to current chat: {new_message}")
                             self.message_area.add_message(new_message)
                         break
+
                 
                 if not ignoring_message_drawing and not chat_found:
-                    print("Chat not found, reloading chats...")
+                    print("DEBUG: Chat not found, reloading chats...")
                     self.load_chats()
                     self.chat_list.update_chats_list()
                         
             elif action['type'] == 'chat':
-                chat_exists = any(chat['id'] == action['chat']['id'] for chat in self.chats)
-                if not chat_exists:
-                    print(f"Adding new chat: {action['chat']}")
+                for i, chat in enumerate(self.chats):
+                    if chat['id'] == action['chat']['id']:
+                        self.chats[i]['members'] = action['chat']['members']
+                        if self.is_page_ready:
+                            if self.current_chat_id == chat['id']:
+                                self.members_list.update_members_list()
+                        break
+        
+                else:
+                    print(f"DEBUG: Adding new chat: {action['chat']}")
                     self.chats.append(action['chat'])
                     if not ignoring_message_drawing:
                         self.chat_list.add_chat_button(action['chat'])
-                
+
+                    
     def open_page(self, window, client_socket):
         self.window = window 
         self.client_socket = client_socket
@@ -93,19 +102,19 @@ class MainMessengerPage:
     
     def load_chats(self):
         """Загружает чаты с сервера"""
-        print("Loading chats from server...")
+        print("LOG: Loading chats from server...")
         self.client_socket.chats_history_request(self.client_socket.client_account.id)
         response = self.client_socket.wait_for_request_answer('chats_history')
         if response and 'chats_history' in response:
             self.chats = response['chats_history']
-            print(f"Loaded {len(self.chats)} chats")
+            print(f"LOG: Loaded {len(self.chats)} chats")
         else:
             self.chats = []
-            print("No chats loaded")
+            print("LOG: No chats loaded")
     
     def select_chat(self, chat_id):
         """Выбирает чат"""
-        print(f"Selecting chat: {chat_id}")
+        print(f"LOG: Selecting chat: {chat_id}")
         self.current_chat_id = chat_id
         
         self.message_area.select_chat()

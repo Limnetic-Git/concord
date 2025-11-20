@@ -34,7 +34,7 @@ class ChatsManager:
                 for ic in chat.invite_codes:
                     if ic == invite_code:
                         return False
-        else: return True
+        return True
         
     def create_chat(self, accounts_manager, chat_type: str, chat_name: str, members_logins: list):
         """Создаёт чат с указанными параметрами"""
@@ -101,8 +101,8 @@ class ChatsManager:
             account_id = account['id']
             accounts_manager.accounts[account_id].new.append(new_message)
         
-    def new_chat_registration(self, accounts_manager, chat, account_id):
-        """Присылает всем реал-таймам инфу о создании нового чата с ними"""
+    def update_chat_data_realtime(self, accounts_manager, chat, account_id):
+        """Присылает всем реал-таймам инфу о чате"""
         new_chat = {
             "type": 'chat',
             "chat": chat.__dict__,
@@ -116,8 +116,8 @@ class ChatsManager:
             if chat.type == 'GROUP':
                 for ic in chat.invite_codes:
                     if ic == invite_code:
-                        return self.add_member_to_chat(chat.id, accounts_manager.accounts[account_id])
-        return 2002 # Инвайт код не действителен
+                        return self.add_member_to_chat(chat.id, accounts_manager.accounts[account_id]), chat
+        return 2002, None # Инвайт код не действителен
                         
 
 
